@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Books</h3>
+{% if book_list %}
+    <ul>
+    {% for book in book_list %}
+        <li>
+            <p>{{ book.title }}</p>
+            <p>{{ book.author }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No books are available.</p>
+{% endif %}
+{% endblock %}

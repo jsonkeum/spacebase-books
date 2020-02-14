@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "core.apps.CoreConfig",
     "books.apps.BooksConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -119,3 +120,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 LOGIN_REDIRECT_URL = "/mybooks"
+
+EMAIL_HOST = 'localhost'
+
+EMAIL_PORT = 1025

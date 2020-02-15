@@ -1,10 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count, Avg, Sum
+from django.db.models import Count, Avg
 from django.db.models.functions import Coalesce
-from django.shortcuts import render
-from django.views import generic
+from django.http import HttpResponseRedirect
 
-from .models import Book
+from django.urls import reverse_lazy
+from django.views import generic
+from django.views.generic import FormView
+
+from . import constants
+from .forms import BookAddForm
+from .models import Book, BookRating
 
 
 class DashboardView(generic.ListView):
@@ -32,3 +37,19 @@ class MyBooksView(LoginRequiredMixin, generic.ListView):
         for book in user_books:
             book.user_rating = book.get_user_rating(self.request.user)
         return user_books
+
+
+class AddBookView(LoginRequiredMixin, FormView):
+    login_url = "core:login"
+    success_url = reverse_lazy("books:books")
+    template_name = "books/book_add_form.html"
+    form_class = BookAddForm
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        book, created = Book.objects.get_or_create(title=data["title"], author=data["author"])
+        if created:
+            book.save()
+        book.users.add(self.request.user)
+        BookRating.objects.create(rating=data["rating"], book=book, user=self.request.user)
+        return HttpResponseRedirect(self.get_success_url())

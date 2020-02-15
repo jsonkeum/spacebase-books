@@ -1,0 +1,18 @@
+.book-list__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.book-list__table {
+    width: 100%;
+}
+
+.book-add__rating {
+    display: flex;
+}
+
+.book-add__rating-option > * {
+    display: block;
+    text-align: center;
+}

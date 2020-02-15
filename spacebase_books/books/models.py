@@ -5,6 +5,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import Avg
 
+from . import constants
+
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
@@ -30,7 +32,7 @@ class Book(models.Model):
 
 class BookRating(models.Model):
     rating = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)]
+        validators=[MinValueValidator(constants.min_rating), MaxValueValidator(constants.max_rating)]
     )
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

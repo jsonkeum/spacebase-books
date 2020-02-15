@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>My Books</h3>
+<div class="book-list__header">
+  <h3>My Books</h3>
+  <a href="{% url 'books:add_book' %}" class="button button--primary">
+    Add New
+  </a>
+</div>
+
 {% if book_list %}
 <table class="book-list__table">
   <tr>

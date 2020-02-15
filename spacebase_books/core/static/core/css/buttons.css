@@ -1,0 +1,11 @@
+.button {
+    padding: 8px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.button--primary {
+    color: white;
+    background-color: #192a42;
+}

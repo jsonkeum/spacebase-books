@@ -1,3 +1,4 @@
 @import "base.css";
-@import "mixin.css";
+@import "mixins.css";
+@import "buttons.css";
 @import "registration.css";

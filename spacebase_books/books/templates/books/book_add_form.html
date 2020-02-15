@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  <div>
+    {{ form.title.label_tag }}
+    {{ form.title }}
+  </div>
+  <div>
+    {{ form.author.label_tag }}
+    {{ form.author }}
+  </div>
+  <div class="book-add__rating">
+    {% for radio in form.rating %}
+      <div class="book-add__rating-option">
+        {{ radio }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <input type="submit" value="Save">
+</form>
+{% endblock %}

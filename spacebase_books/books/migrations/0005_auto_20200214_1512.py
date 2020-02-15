@@ -8,21 +8,17 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('books', '0004_auto_20200214_1506'),
+        ("books", "0004_auto_20200214_1506"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='book',
-            name='title',
-            field=models.CharField(max_length=200),
+            model_name="book", name="title", field=models.CharField(max_length=200),
         ),
         migrations.AlterUniqueTogether(
-            name='book',
-            unique_together={('title', 'author')},
+            name="book", unique_together={("title", "author")},
         ),
         migrations.AlterUniqueTogether(
-            name='bookrating',
-            unique_together={('book', 'user')},
+            name="bookrating", unique_together={("book", "user")},
         ),
     ]

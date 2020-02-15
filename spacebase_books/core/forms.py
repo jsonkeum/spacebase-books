@@ -4,9 +4,17 @@ from django.contrib.auth.models import User
 
 
 class SignUpForm(UserCreationForm):
-    email = forms.EmailField(max_length=254, help_text='A valid email is required for account management (e.g. '
-                                                       'password reset).')
+    email = forms.EmailField(
+        max_length=254,
+        help_text="A valid email is required for account management (e.g. "
+        "password reset).",
+    )
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2', )
+        fields = (
+            "username",
+            "email",
+            "password1",
+            "password2",
+        )

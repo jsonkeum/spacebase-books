@@ -13,7 +13,7 @@ class Book(models.Model):
     users = models.ManyToManyField(User)
 
     class Meta:
-        unique_together = [['title', 'author']]
+        unique_together = [["title", "author"]]
 
     def __str__(self):
         return f"{self.title} - {self.author}"
@@ -22,19 +22,21 @@ class Book(models.Model):
         return self.bookrating_set.get(user=user).rating
 
     def get_average_rating(self):
-        return self.bookrating_set.aggregate(Avg('rating'))['rating__avg']
+        return self.bookrating_set.aggregate(Avg("rating"))["rating__avg"]
 
     def get_reader_count(self):
         return self.users.count()
 
 
 class BookRating(models.Model):
-    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    rating = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = [['book', 'user']]
+        unique_together = [["book", "user"]]
 
     def __str__(self):
         return f"{self.user.username} rated {self.book.title} a {self.rating} out of 5."

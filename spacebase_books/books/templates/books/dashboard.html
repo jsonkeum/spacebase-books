@@ -33,4 +33,19 @@
 <p>No books are available.</p>
 {% endif %}
 
+<h3>Just Added</h3>
+{% if dashboard_lists.just_added %}
+<ul>
+  {% for book in dashboard_lists.just_added %}
+  <li>
+    <p>{{ book.title }}</p>
+    <p>{{ book.author }}</p>
+    <p>{{ book.reader_count }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No books are available.</p>
+{% endif %}
+
 {% endblock %}

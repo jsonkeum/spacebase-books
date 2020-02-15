@@ -121,6 +121,6 @@ STATIC_URL = "/static/"
 
 LOGIN_REDIRECT_URL = "/mybooks"
 
-EMAIL_HOST = 'localhost'
+EMAIL_HOST = "localhost"
 
 EMAIL_PORT = 1025

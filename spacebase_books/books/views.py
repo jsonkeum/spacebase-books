@@ -12,12 +12,17 @@ class DashboardView(generic.ListView):
     context_object_name = "dashboard_lists"
     model = Book
     queryset = {
-        "top_rated": Book.objects.annotate(avg_rating=Coalesce(Avg('bookrating__rating'), 0)).order_by('-avg_rating')[:5],
-        "most_read": Book.objects.annotate(reader_count=Count('users')).order_by('-reader_count')[:5]
+        "top_rated": Book.objects.annotate(
+            avg_rating=Coalesce(Avg("bookrating__rating"), 0)
+        ).order_by("-avg_rating")[:5],
+        "most_read": Book.objects.annotate(reader_count=Count("users")).order_by(
+            "-reader_count"
+        )[:5],
+        "just_added": Book.objects.order_by("-created_at")[:5],
     }
 
 
-class BooksView(LoginRequiredMixin, generic.ListView):
+class MyBooksView(LoginRequiredMixin, generic.ListView):
     login_url = "core:login"
     model = Book
     template_name = "books/books_list.html"

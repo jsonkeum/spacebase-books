@@ -8,17 +8,14 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('books', '0003_auto_20200214_1445'),
+        ("books", "0003_auto_20200214_1445"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='book',
-            name='times_read',
-        ),
+        migrations.RemoveField(model_name="book", name="times_read",),
         migrations.AddField(
-            model_name='book',
-            name='users',
+            model_name="book",
+            name="users",
             field=models.ManyToManyField(to=settings.AUTH_USER_MODEL),
         ),
     ]

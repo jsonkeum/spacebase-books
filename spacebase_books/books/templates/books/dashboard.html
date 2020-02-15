@@ -3,4 +3,34 @@
 {% block content %}
 <h1>Dashboard</h1>
 
+<h3>Top Rated</h3>
+{% if dashboard_lists.top_rated %}
+<ul>
+  {% for book in dashboard_lists.top_rated %}
+  <li>
+    <p>{{ book.title }}</p>
+    <p>{{ book.author }}</p>
+    <p>{{ book.avg_rating }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No books are available.</p>
+{% endif %}
+
+<h3>Most Read</h3>
+{% if dashboard_lists.most_read %}
+<ul>
+  {% for book in dashboard_lists.most_read %}
+  <li>
+    <p>{{ book.title }}</p>
+    <p>{{ book.author }}</p>
+    <p>{{ book.reader_count }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No books are available.</p>
+{% endif %}
+
 {% endblock %}

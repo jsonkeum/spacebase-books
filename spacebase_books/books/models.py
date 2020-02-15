@@ -18,7 +18,7 @@ class Book(models.Model):
         return f"{self.title} - {self.author}"
 
     def get_user_rating(self, user):
-        return self.bookrating_set.get(user=user)
+        return self.bookrating_set.get(user=user).rating
 
     def get_average_rating(self):
         return self.bookrating_set.aggregate(Avg('rating'))['rating__avg']

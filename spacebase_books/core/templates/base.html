@@ -7,12 +7,40 @@
 
   {% load static %}
   <link rel="stylesheet" type="text/css" href="{% static 'core/css/style.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'books/css/style.css' %}">
 </head>
 <body>
   <header>
+    <h1>Books!</h1>
+    <div class="menu">
+      <ul>
+        <li>
+          <a href="{% url 'books:dashboard' %}">
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'books:books' %}">
+            My Books
+          </a>
+        </li>
+        <li>
+          {% if user.is_authenticated %}
+            <p>Hi, {{ user.username }}</p>
+            <a href="{% url 'core:logout' %}">
+              Sign Out
+            </a>
+          {% else %}
+            <a href="{% url 'core:login' %}">
+              Sign In
+            </a>
+          {% endif %}
 
+        </li>
+      </ul>
+    </div>
   </header>
-  <div>
+  <div class="content-window">
     {% block content %}{% endblock %}
     {% block pagination %}
       {% if is_paginated %}

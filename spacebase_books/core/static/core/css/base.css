@@ -1,0 +1,32 @@
+html, body {
+    margin: 0;
+    background-color: #f5f4eb;
+}
+
+header {
+    background-color: #192a42;
+    color: white;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.menu ul {
+    display: flex;
+    align-items: center;
+}
+
+.menu li {
+    list-style: none;
+    margin-left: 16px;
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+}
+
+.content-window {
+    padding: 24px;
+}

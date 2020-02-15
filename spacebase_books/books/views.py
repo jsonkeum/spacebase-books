@@ -28,4 +28,7 @@ class MyBooksView(LoginRequiredMixin, generic.ListView):
     template_name = "books/books_list.html"
 
     def get_queryset(self):
-        return self.request.user.book_set.all()
+        user_books = self.request.user.book_set.all()
+        for book in user_books:
+            book.user_rating = book.get_user_rating(self.request.user)
+        return user_books

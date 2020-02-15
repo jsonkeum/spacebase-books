@@ -1,16 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>Books</h3>
+<h3>My Books</h3>
 {% if book_list %}
-<ul>
+<table class="book-list__table">
+  <tr>
+    <th>Title</th>
+    <th>Author</th>
+    <th>My Rating</th>
+    <th>Edit / Delete</th>
+  </tr>
   {% for book in book_list %}
-  <li>
-    <p>{{ book.title }}</p>
-    <p>{{ book.author }}</p>
-  </li>
+  <tr>
+    <td>{{ book.title }}</td>
+    <td>{{ book.author }}</td>
+    <td class="text-center">{{ book.user_rating }}</td>
+  </tr>
   {% endfor %}
-</ul>
+</table>
 {% else %}
 <p>No books are available.</p>
 {% endif %}

@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
@@ -21,7 +22,9 @@ class DashboardView(ContextMixin, generic.View):
         return render(request, self.template_name)
 
 
-class BooksView(generic.ListView):
+class BooksView(LoginRequiredMixin, generic.ListView):
+    login_url = "core:login"
+
     model = Book
     template_name = "books/books_list.html"
     queryset = Book.objects.order_by("-title")

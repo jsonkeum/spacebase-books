@@ -38,7 +38,7 @@ class BookModelTests(TestCase):
         user = User.objects.first()
         BookRating.objects.create(rating=3, book=book, user=user)
 
-        self.assertEqual(book.get_user_rating(user), 3)
+        self.assertEqual(book.get_user_rating(user).rating, 3)
 
     def test_get_average_rating(self):
         book = Book.objects.first()

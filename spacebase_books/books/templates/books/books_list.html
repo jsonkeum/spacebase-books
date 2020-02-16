@@ -21,6 +21,10 @@
     <td>{{ book.title }}</td>
     <td>{{ book.author }}</td>
     <td class="text-center">{{ book.user_rating }}</td>
+    <td>
+      <a href="{% url 'books:edit_book' book_id=book.id %}">Edit</a> /
+      <a href="{% url 'books:delete_book' book_id=book.id %}">Delete</a>
+    </td>
   </tr>
   {% endfor %}
 </table>

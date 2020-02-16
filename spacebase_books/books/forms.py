@@ -4,7 +4,7 @@ from django.forms import RadioSelect
 from .constants import rating_choices
 
 
-class BookAddForm(forms.Form):
+class BookForm(forms.Form):
     forms.CharField
     title = forms.CharField(max_length=200, label="Title")
     author = forms.CharField(max_length=200, label="Author")

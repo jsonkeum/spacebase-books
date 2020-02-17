@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import IntegrityError
 from django.db.models import Count, Avg
 from django.db.models.functions import Coalesce
 from django.http import HttpResponseRedirect
@@ -7,8 +8,9 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import FormView
 
+from . import constants
 from .forms import BookForm
-from .models import Book, BookRating
+from .models import Book, BookUser
 
 
 class DashboardView(generic.ListView):
@@ -17,9 +19,9 @@ class DashboardView(generic.ListView):
     model = Book
     queryset = {
         "top_rated": Book.objects.annotate(
-            avg_rating=Coalesce(Avg("bookrating__rating"), 0)
+            avg_rating=Coalesce(Avg("bookuser__rating"), 0)
         ).order_by("-avg_rating")[:5],
-        "most_read": Book.objects.annotate(reader_count=Count("users")).order_by(
+        "most_read": Book.objects.annotate(reader_count=Count("bookuser")).order_by(
             "-reader_count"
         )[:5],
         "just_added": Book.objects.order_by("-created_at")[:5],
@@ -27,47 +29,62 @@ class DashboardView(generic.ListView):
 
 
 class MyBooksView(LoginRequiredMixin, generic.ListView):
-    login_url = "core:login"
+    login_url = constants.LOGIN_URL
     model = Book
     template_name = "books/books_list.html"
 
     def get_queryset(self):
-        user_books = self.request.user.book_set.all()
+        user_books = Book.objects.filter(bookuser__user=self.request.user)
         for book in user_books:
-            book.user_rating = book.get_user_rating(self.request.user).rating
+            details = book.get_user_detail(self.request.user)
+            book.user_rating = details.rating
+            book.external_id = details.external_id
         return user_books
 
 
 class AddBookView(LoginRequiredMixin, FormView):
-    login_url = "core:login"
-    success_url = reverse_lazy("books:books")
+    login_url = constants.LOGIN_URL
+    success_url = reverse_lazy(constants.MAIN_PAGE)
     template_name = "books/book_form.html"
     form_class = BookForm
 
     def form_valid(self, form):
         data = form.cleaned_data
-        book, created = Book.objects.get_or_create(title=data["title"], author=data["author"])
-        if created:
-            book.save()
-        book.users.add(self.request.user)
-        BookRating.objects.create(rating=data["rating"], book=book, user=self.request.user)
-        return HttpResponseRedirect(self.get_success_url())
+        try:
+            book, created = Book.objects.get_or_create(title=data["title"], author=data["author"])
+            BookUser.objects.create(rating=data["rating"], book=book, user=self.request.user,
+                                    external_id=data["external_id"])
+            return HttpResponseRedirect(self.get_success_url())
+        except IntegrityError as e:
+            if created:
+                book.delete()
+            if 'external_id' in str(e):
+                context = self.get_context_data(**self.kwargs)
+                context['form'] = BookForm({
+                    'title': data["title"],
+                    'author': data["author"],
+                    'rating': data["rating"],
+                    'external_id': data["external_id"],
+                })
+                context['external_id_error'] = constants.EXTERNAL_ID_ERROR
+            return self.render_to_response(context)
 
 
 class EditBookView(LoginRequiredMixin, FormView):
-    login_url = "core:login"
-    success_url = reverse_lazy("books:books")
+    login_url = constants.LOGIN_URL
+    success_url = reverse_lazy(constants.MAIN_PAGE)
     template_name = "books/book_form.html"
     form_class = BookForm
 
     def get(self, request, *args, **kwargs):
         book = Book.objects.get(pk=kwargs['book_id'])
-        rating = book.get_user_rating(request.user).rating
+        book_user = book.get_user_detail(request.user)
         context = self.get_context_data(**kwargs)
         context['form'] = BookForm({
             'title': book.title,
             'author': book.author,
-            'rating': rating,
+            'rating': book_user.rating,
+            'external_id': book_user.external_id,
         })
 
         return self.render_to_response(context)
@@ -79,34 +96,21 @@ class EditBookView(LoginRequiredMixin, FormView):
         data = form.cleaned_data
         book, created = Book.objects.get_or_create(title=data["title"], author=data["author"])
 
-        # save new book, add user.
-        if created:
-            book.save()
-        book.users.add(self.request.user)
-
-        # Remove user to old book relation
-        print(self.kwargs)
         old_book = Book.objects.get(pk=self.kwargs['book_id'])
+        BookUser.objects.get(book=old_book, user=self.request.user).delete()
+        BookUser.objects.create(book=book, user=self.request.user, rating=data["rating"],
+                                external_id=data['external_id'])
 
-        print(old_book.users.count())
-        # If user is the only reader, just delete and cascade. Else remove user relation and delete rating
-        if old_book.users.count() <= 1:
+        if old_book.bookuser_set.count() <= 1:
             old_book.delete()
-        else:
-            old_book.users.remove(self.request.user)
-            BookRating.objects.get(book=old_book, user=self.request.user).delete()
-
-        # Save new rating
-        BookRating.objects.create(rating=data["rating"], book=book, user=self.request.user)
 
         return HttpResponseRedirect(self.get_success_url())
 
 
 def delete_book(request, book_id):
     book = Book.objects.get(pk=book_id)
-    if book.users.count() <= 1:
+    if book.bookuser_set.count() <= 1:
         book.delete()
     else:
-        book.users.remove(request.user)
-        BookRating.objects.get(book=book, user=request.user).delete()
-    return HttpResponseRedirect(reverse_lazy('books:books'))
+        BookUser.objects.get(book=book, user=request.user).delete()
+    return HttpResponseRedirect(reverse_lazy(constants.MAIN_PAGE))

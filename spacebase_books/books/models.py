@@ -12,7 +12,6 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
-    users = models.ManyToManyField(User)
 
     class Meta:
         unique_together = [["title", "author"]]
@@ -20,25 +19,26 @@ class Book(models.Model):
     def __str__(self):
         return f"{self.title} - {self.author}"
 
-    def get_user_rating(self, user):
-        return self.bookrating_set.get(user=user)
+    def get_user_detail(self, user):
+        return self.bookuser_set.get(user=user)
 
     def get_average_rating(self):
-        return self.bookrating_set.aggregate(Avg("rating"))["rating__avg"]
+        return self.bookuser_set.aggregate(Avg("rating"))["rating__avg"]
 
     def get_reader_count(self):
-        return self.users.count()
+        return self.bookuser_set.count()
 
 
-class BookRating(models.Model):
-    rating = models.IntegerField(
-        validators=[MinValueValidator(constants.min_rating), MaxValueValidator(constants.max_rating)]
-    )
+class BookUser(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(
+        validators=[MinValueValidator(constants.MIN_RATING), MaxValueValidator(constants.MAX_RATING)]
+    )
+    external_id = models.CharField(max_length=200, default=None, blank=True, null=True)
 
     class Meta:
-        unique_together = [["book", "user"]]
+        unique_together = [["book", "user"], ["user", "external_id"]]
 
     def __str__(self):
         return f"{self.user.username} rated {self.book.title} a {self.rating} out of 5."

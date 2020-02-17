@@ -1,4 +1,9 @@
-min_rating = 1
-max_rating = 5
+MIN_RATING = 1
+MAX_RATING = 5
 
-rating_choices = [(i, i) for i in range (min_rating, max_rating+1)]
+RATING_CHOICES = [(i, i) for i in range (MIN_RATING, MAX_RATING + 1)]
+
+LOGIN_URL = 'core:login'
+MAIN_PAGE = 'books:books'
+
+EXTERNAL_ID_ERROR = "External ID already exists. Please choose a different ID."

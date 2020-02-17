@@ -11,6 +11,11 @@
     {{ form.author.label_tag }}
     {{ form.author }}
   </div>
+  <div>
+    <p class="form-error">{{ external_id_error }}</p>
+    {{ form.external_id.label_tag }}
+    {{ form.external_id }}
+  </div>
   <div class="book-add__rating">
     {% for radio in form.rating %}
       <div class="book-add__rating-option">

@@ -4,27 +4,31 @@ from django.test import TestCase, Client
 from django.urls import reverse
 
 # Create your tests here.
-from .models import Book, BookRating
+from .models import Book, BookUser
 from django.contrib.auth.models import User
 
 
 class BookModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        Book.objects.create(title="The Road", author="Cormac MacCarthy")
+        cls.book = Book.objects.create(title="The Road", author="Cormac MacCarthy")
 
-        User.objects.create_user(
+        u1 = User.objects.create_user(
             username="abdullah", email="abdullah@gmail.com", password="123456"
         )
-        User.objects.create_user(
+        u2 = User.objects.create_user(
             username="bob", email="bob@gmail.com", password="123456"
         )
-        User.objects.create_user(
+        u3 = User.objects.create_user(
             username="carol", email="carol@gmail.com", password="123456"
         )
-        User.objects.create_user(
+        u4 = User.objects.create_user(
             username="dinah", email="dinah@gmail.com", password="123456"
         )
+        BookUser.objects.create(rating=3, book=cls.book, user=u1)
+        BookUser.objects.create(rating=4, book=cls.book, user=u2)
+        BookUser.objects.create(rating=5, book=cls.book, user=u3)
+        BookUser.objects.create(rating=3, book=cls.book, user=u4)
 
     def test_prevents_case_sensitive_duplicates(self):
         book, created = Book.objects.get_or_create(
@@ -34,30 +38,14 @@ class BookModelTests(TestCase):
         self.assertEqual(created, False)
 
     def test_get_user_rating(self):
-        book = Book.objects.first()
-        user = User.objects.first()
-        BookRating.objects.create(rating=3, book=book, user=user)
-
-        self.assertEqual(book.get_user_rating(user).rating, 3)
+        user = User.objects.get(username="abdullah")
+        self.assertEqual(self.book.get_user_detail(user).rating, 3)
 
     def test_get_average_rating(self):
-        book = Book.objects.first()
-        users = User.objects.all()
-        BookRating.objects.create(rating=3, book=book, user=users[0])
-        BookRating.objects.create(rating=4, book=book, user=users[1])
-        BookRating.objects.create(rating=5, book=book, user=users[2])
-        BookRating.objects.create(rating=3, book=book, user=users[3])
-
-        self.assertEqual(book.get_average_rating(), 3.75)
+        self.assertEqual(self.book.get_average_rating(), 3.75)
 
     def test_get_reader_count(self):
-        book = Book.objects.first()
-        users = User.objects.all()
-        book.users.add(users[0])
-        book.users.add(users[1], users[2])
-        book.save()
-
-        self.assertEqual(book.get_reader_count(), 3)
+        self.assertEqual(self.book.get_reader_count(), 4)
 
 
 class MyBooksViewTests(TestCase):
@@ -76,10 +64,11 @@ class MyBooksViewTests(TestCase):
             username="bob", email="bob@gmail.com", password="123456"
         )
 
-        b1.users.add(u1)
-        b2.users.add(u1)
-        b3.users.add(u1, u2)
-        b4.users.add(u2)
+        BookUser.objects.create(rating=3, book=b1, user=u1)
+        BookUser.objects.create(rating=4, book=b2, user=u1)
+        BookUser.objects.create(rating=5, book=b3, user=u1)
+        BookUser.objects.create(rating=3, book=b3, user=u2)
+        BookUser.objects.create(rating=3, book=b4, user=u2)
 
     def test_login_redirect(self):
         response = self.client.get(reverse("books:books"))
@@ -170,62 +159,37 @@ class DashboardViewTests(TestCase):
             ),
         ]
 
-        b1.users.add(*users[:5])
-        b2.users.add(*users[:3])
-        b3.users.add(*users[:12])
-        b4.users.add(*users[:1])
-        b5.users.add(*users[:2])
-        b6.users.add(*users[:5])
-        b7.users.add(*users[:14])
-        b8.users.add(*users[:11])
-        b9.users.add(*users[:4])
-        b10.users.add(*users[:8])
-        b11.users.add(*users[:1])
-        b12.users.add(*users[:3])
-        b13.users.add(*users[:9])
-        b14.users.add(*users[:7])
-        b15.users.add(*users[:6])
+        BookUser.objects.create(rating=4, book=b1, user=users[0])
+        # 4
 
-        BookRating.objects.create(rating=3, book=b1, user=users[0])
-        BookRating.objects.create(rating=4, book=b1, user=users[1])
-        BookRating.objects.create(rating=5, book=b1, user=users[2])
-        BookRating.objects.create(rating=3, book=b1, user=users[3])
-        BookRating.objects.create(rating=1, book=b1, user=users[4])
-        # 3.2
+        BookUser.objects.create(rating=3, book=b2, user=users[0])
+        BookUser.objects.create(rating=2, book=b2, user=users[1])
+        BookUser.objects.create(rating=3, book=b2, user=users[2])
+        # 2.67
 
-        BookRating.objects.create(rating=3, book=b2, user=users[0])
-        BookRating.objects.create(rating=2, book=b2, user=users[1])
-        BookRating.objects.create(rating=5, book=b2, user=users[2])
-        BookRating.objects.create(rating=1, book=b2, user=users[3])
-        BookRating.objects.create(rating=1, book=b2, user=users[4])
-        # 2.4
+        BookUser.objects.create(rating=3, book=b3, user=users[0])
+        BookUser.objects.create(rating=1, book=b3, user=users[1])
+        BookUser.objects.create(rating=4, book=b3, user=users[2])
+        BookUser.objects.create(rating=3, book=b3, user=users[3])
+        # 2.75
 
-        BookRating.objects.create(rating=3, book=b3, user=users[0])
-        BookRating.objects.create(rating=1, book=b3, user=users[1])
-        BookRating.objects.create(rating=1, book=b3, user=users[2])
-        BookRating.objects.create(rating=1, book=b3, user=users[3])
-        BookRating.objects.create(rating=4, book=b3, user=users[4])
-        # 2.0
-
-        BookRating.objects.create(rating=3, book=b7, user=users[0])
-        BookRating.objects.create(rating=2, book=b7, user=users[1])
-        BookRating.objects.create(rating=5, book=b7, user=users[2])
-        BookRating.objects.create(rating=3, book=b7, user=users[3])
-        BookRating.objects.create(rating=5, book=b7, user=users[4])
+        BookUser.objects.create(rating=3, book=b7, user=users[0])
+        BookUser.objects.create(rating=2, book=b7, user=users[1])
+        BookUser.objects.create(rating=5, book=b7, user=users[2])
+        BookUser.objects.create(rating=3, book=b7, user=users[3])
+        BookUser.objects.create(rating=5, book=b7, user=users[4])
         # 3.6
 
-        BookRating.objects.create(rating=5, book=b14, user=users[0])
-        BookRating.objects.create(rating=5, book=b14, user=users[1])
-        BookRating.objects.create(rating=5, book=b14, user=users[2])
-        BookRating.objects.create(rating=5, book=b14, user=users[3])
-        BookRating.objects.create(rating=4, book=b14, user=users[4])
-        # 4.8
+        BookUser.objects.create(rating=5, book=b14, user=users[3])
+        BookUser.objects.create(rating=4, book=b14, user=users[4])
+        # 4.5
 
-        BookRating.objects.create(rating=3, book=b10, user=users[0])
-        BookRating.objects.create(rating=3, book=b10, user=users[1])
-        BookRating.objects.create(rating=3, book=b10, user=users[2])
-        BookRating.objects.create(rating=3, book=b10, user=users[3])
-        BookRating.objects.create(rating=3, book=b10, user=users[4])
+        BookUser.objects.create(rating=3, book=b10, user=users[0])
+        BookUser.objects.create(rating=3, book=b10, user=users[1])
+        BookUser.objects.create(rating=3, book=b10, user=users[2])
+        BookUser.objects.create(rating=3, book=b10, user=users[3])
+        BookUser.objects.create(rating=3, book=b10, user=users[4])
+        BookUser.objects.create(rating=3, book=b10, user=users[5])
         # 3.0
 
     def test_most_read_list(self):
@@ -234,11 +198,11 @@ class DashboardViewTests(TestCase):
         self.assertQuerysetEqual(
             response.context["dashboard_lists"]["most_read"],
             [
+                "<Book: Invisible Man - Ralph Ellison>",
                 "<Book: To Kill a Mockingbird - Harper Lee>",
                 "<Book: 1984 - George Orwell>",
-                "<Book: The Lord of the Rings - JRR Tolkien>",
-                "<Book: Lord of the Flies - William Golding>",
-                "<Book: Invisible Man - Ralph Ellison>",
+                "<Book: The Grapes of Wrath - John Steinbeck>",
+                "<Book: Heart of Darkness - Joseph Conrad>",
             ],
             ordered=True,
         )
@@ -250,10 +214,10 @@ class DashboardViewTests(TestCase):
             response.context["dashboard_lists"]["top_rated"],
             [
                 "<Book: Heart of Darkness - Joseph Conrad>",
-                "<Book: To Kill a Mockingbird - Harper Lee>",
                 "<Book: The Road - Cormac MacCarthy>",
+                "<Book: To Kill a Mockingbird - Harper Lee>",
                 "<Book: Invisible Man - Ralph Ellison>",
-                "<Book: The Grapes of Wrath - John Steinbeck>",
+                "<Book: 1984 - George Orwell>",
             ],
             ordered=True,
         )

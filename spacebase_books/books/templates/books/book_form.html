@@ -1,29 +1,44 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="post">
+<h3 class="text-center">Enter your book details:</h3>
+{% if error %}
+  <div class="form-error text-center helptext">
+    {{ error }}
+  </div>
+  <br>
+{% endif %}
+<form method="post" class="form-wrapper">
   {% csrf_token %}
-  <div>
-    {{ form.title.label_tag }}
+
+  <div class="book-add__fields">
+    <div>{{ form.title.label_tag }}</div>
     {{ form.title }}
-  </div>
-  <div>
-    {{ form.author.label_tag }}
+
+    <div>{{ form.author.label_tag }}</div>
     {{ form.author }}
-  </div>
-  <div>
-    <p class="form-error">{{ external_id_error }}</p>
-    {{ form.external_id.label_tag }}
+
+    <div>
+      {{ form.external_id.label_tag }}
+      <span class="helptext">(Optional)</span>
+    </div>
     {{ form.external_id }}
+
+    <div>My Rating:</div>
+    <div class="book-add__rating">
+      {% for radio in form.rating %}
+        <label for="{{ radio.id_for_label }}" class="radio-wrapper">
+          <div class="text-center">{{ radio.choice_label }}</div>
+          {{ radio.tag }}
+          <div class="button--radio"><div></div></div>
+        </label>
+      {% endfor %}
+    </div>
   </div>
-  <div class="book-add__rating">
-    {% for radio in form.rating %}
-      <div class="book-add__rating-option">
-        {{ radio }}
-      </div>
-    {% endfor %}
+  <div class="button-drawer">
+    <a class="button button--secondary" href="{% url 'books:books' %}">Cancel</a>
+    <input type="submit" value="Save">
   </div>
 
-  <input type="submit" value="Save">
 </form>
 {% endblock %}

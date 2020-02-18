@@ -5,28 +5,39 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Martel&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+
   {% load static %}
   <link rel="stylesheet" type="text/css" href="{% static 'core/css/style.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'books/css/style.css' %}">
 </head>
 <body>
-  <header>
-    <h1>Books!</h1>
-    <div class="menu">
-      <ul>
-        <li>
+  <div class="page-container">
+    <header>
+      <a class="header-title" href="{% url 'books:dashboard' %}">
+        <h1><i class="far fa-bookmark"></i> The Big Book of Books</h1>
+      </a>
+      <div class="menu">
+        <p>
+        {% if user.is_authenticated %}
+          Hi, {{ user.username }} <i class="far fa-user"></i>
+        {% else %}
+          Viewing as Guest
+        {% endif %}
+        </p>
+        <div>
           <a href="{% url 'books:dashboard' %}">
             Dashboard
           </a>
-        </li>
-        <li>
+        </div>
+        <div>
           <a href="{% url 'books:books' %}">
             My Books
           </a>
-        </li>
-        <li>
+        </div>
+        <div>
           {% if user.is_authenticated %}
-            <p>Hi, {{ user.username }}</p>
             <a href="{% url 'core:logout' %}">
               Sign Out
             </a>
@@ -35,30 +46,32 @@
               Sign In
             </a>
           {% endif %}
-
-        </li>
-      </ul>
-    </div>
-  </header>
-  <div class="content-window">
-    {% block content %}{% endblock %}
-    {% block pagination %}
-      {% if is_paginated %}
-        <div>
-          <span>
-            {% if page_obj.has_previous %}
-              <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
-            {% endif %}
-            <span>
-              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-            </span>
-            {% if page_obj.has_next %}
-              <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
-            {% endif %}
-          </span>
         </div>
-      {% endif %}
-    {% endblock %}
+      </div>
+    </header>
+    <div class="content-window">
+      {% block content %}{% endblock %}
+      {% block pagination %}
+        {% if is_paginated %}
+          <div class="pagination">
+            <span>
+              {% if page_obj.has_previous %}
+                <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+              {% endif %}
+              <span>
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+              </span>
+              {% if page_obj.has_next %}
+                <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+              {% endif %}
+            </span>
+          </div>
+        {% endif %}
+      {% endblock %}
+    </div>
+    <footer>
+      <p class="text-center">© 2020 - Jason Keum</p>
+    </footer>
   </div>
 </body>
 </html>

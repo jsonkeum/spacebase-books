@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <p>Logged out!</p>  
+<div class="form-wrapper text-center">
+  <p>Logged out!</p>
   <a href="{% url 'core:login'%}">Click here to login again.</a>
+</div>
 {% endblock %}

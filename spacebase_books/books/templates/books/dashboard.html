@@ -1,51 +1,65 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Dashboard</h1>
+<div class="dashboard">
+  <h3>Top Rated</h3>
+  <div>
+    {% if dashboard_lists.top_rated %}
+    <div class="dashboard-grid">
+      {% for book in dashboard_lists.top_rated %}
+      <div>
+        <h4 class="text-center">{{ book.title }}</h4>
+        <p class="dashboard__author">- {{ book.author }}</p>
+        <div class="dashboard__book-stats">
+          <p class="dashboard__rating">{{ book.avg_rating|floatformat:1 }}</p>
+          <p>{{ book.reader_count }} readers</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>No books are available.</p>
+    {% endif %}
+  </div>
 
-<h3>Top Rated</h3>
-{% if dashboard_lists.top_rated %}
-<ul>
-  {% for book in dashboard_lists.top_rated %}
-  <li>
-    <p>{{ book.title }}</p>
-    <p>{{ book.author }}</p>
-    <p>{{ book.avg_rating }}</p>
-  </li>
-  {% endfor %}
-</ul>
-{% else %}
-<p>No books are available.</p>
-{% endif %}
+  <h3>Most Read</h3>
+  <div>
+    {% if dashboard_lists.most_read %}
+    <div class="dashboard-grid">
+      {% for book in dashboard_lists.most_read %}
+      <div>
+        <h4 class="text-center">{{ book.title }}</h4>
+        <p class="dashboard__author">- {{ book.author }}</p>
+        <div class="dashboard__book-stats">
+          <p class="dashboard__rating">{{ book.avg_rating|floatformat:1 }}</p>
+          <p>{{ book.reader_count }} readers</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>No books are available.</p>
+    {% endif %}
+  </div>
 
-<h3>Most Read</h3>
-{% if dashboard_lists.most_read %}
-<ul>
-  {% for book in dashboard_lists.most_read %}
-  <li>
-    <p>{{ book.title }}</p>
-    <p>{{ book.author }}</p>
-    <p>{{ book.reader_count }}</p>
-  </li>
-  {% endfor %}
-</ul>
-{% else %}
-<p>No books are available.</p>
-{% endif %}
-
-<h3>Just Added</h3>
-{% if dashboard_lists.just_added %}
-<ul>
-  {% for book in dashboard_lists.just_added %}
-  <li>
-    <p>{{ book.title }}</p>
-    <p>{{ book.author }}</p>
-    <p>{{ book.reader_count }}</p>
-  </li>
-  {% endfor %}
-</ul>
-{% else %}
-<p>No books are available.</p>
-{% endif %}
-
+  <h3>Just Added</h3>
+  <div>
+    {% if dashboard_lists.just_added %}
+    <div class="dashboard-grid">
+      {% for book in dashboard_lists.just_added %}
+      <div>
+        <h4 class="text-center">{{ book.title }}</h4>
+        <p class="dashboard__author">- {{ book.author }}</p>
+        <div class="dashboard__book-stats">
+          <p class="dashboard__rating">{{ book.avg_rating|floatformat:1 }}</p>
+          <p>{{ book.reader_count }} readers</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>No books are available.</p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

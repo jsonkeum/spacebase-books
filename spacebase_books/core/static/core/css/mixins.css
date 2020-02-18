@@ -5,3 +5,26 @@
 .form-error {
     color: #850001;
 }
+
+.form-center {
+    margin: auto;
+    text-align: center;
+}
+
+.form-wrapper {
+    width: fit-content;
+    margin: auto;
+}
+
+.button-drawer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 120px);
+    grid-column-gap: 8px;
+    margin: 16px auto auto auto;
+    justify-content: center;
+}
+
+.helptext {
+    display: block;
+    font-size: smaller;
+}

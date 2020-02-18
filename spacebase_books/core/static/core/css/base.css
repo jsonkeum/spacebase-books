@@ -1,25 +1,93 @@
-html, body {
-    margin: 0;
-    background-color: #f5f4eb;
+html,
+body,
+input,
+button {
+    font-family: 'Martel', serif;
 }
 
-header {
+html, body {
+    margin: 0;
+    background-color: #f5f0dd;
+}
+
+body {
+    min-height: 98vh;
+}
+
+header, footer {
     background-color: #192a42;
     color: white;
     padding: 24px;
+}
+
+header {
+
     display: flex;
     align-items: center;
     justify-content: space-between;
+    box-shadow: 0px 1px 2px 0px #192a42;
 }
 
-.menu ul {
-    display: flex;
-    align-items: center;
+header h1 {
+    font-family: 'Crimson Text', serif;
+    font-size: 3em;
+    font-variant: small-caps;
 }
 
-.menu li {
-    list-style: none;
-    margin-left: 16px;
+footer {
+    height: 3em;
+    width: 100%;
+    bottom: 0;
+    position: absolute;
+}
+
+footer p {
+    font-size: small;
+}
+
+input {
+    padding: 4px;
+    border-radius: 4px;
+    border-width: 1px;
+}
+
+button[type=submit],
+input[type=submit] {
+    padding: 8px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 4px;
+    color: white;
+    background-color: #192a42;
+    min-width: 120px;
+}
+
+button[type=submit]:hover,
+input[type=submit]:hover {
+    background-color: #304f7b;
+}
+
+.page-container {
+    position: relative;
+    min-height: 100vh;
+}
+
+.content-window {
+    padding: 24px 24px 10em 24px;
+    margin: auto;
+    max-width: 1200px;
+}
+
+.pagination {
+    margin-top: 32px;
+    text-align: center;
+}
+
+.menu {
+    display: grid;
+    grid-column-gap: 24px;
+    grid-template-columns: repeat(3, auto)
 }
 
 .menu a {
@@ -27,6 +95,14 @@ header {
     text-decoration: none;
 }
 
-.content-window {
-    padding: 24px;
+.menu > p {
+    text-align: right;
+    font-size: small;
+    grid-column-start: 1;
+    grid-column-end: 4;
+}
+
+.header-title {
+    text-decoration: none;
+    color: white;
 }

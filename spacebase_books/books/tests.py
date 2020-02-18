@@ -93,10 +93,7 @@ class MyBooksViewTests(TestCase):
 
         self.assertQuerysetEqual(
             response.context["book_list"],
-            [
-                "<Book: Ulysses - James Joyce>",
-                "<Book: 1984 - George Orwell>",
-            ],
+            ["<Book: Ulysses - James Joyce>", "<Book: 1984 - George Orwell>",],
             ordered=False,
         )
 
@@ -115,15 +112,15 @@ class DashboardViewTests(TestCase):
         b8 = Book.objects.create(title="The Lord of the Rings", author="JRR Tolkien")
         b9 = Book.objects.create(title="Brave New World", author="Aldous Huxley")
         b10 = Book.objects.create(title="Invisible Man", author="Ralph Ellison")
-        time.sleep(.01)
+        time.sleep(0.01)
         b11 = Book.objects.create(title="Jane Eyre", author="Charlotte Bronte")
-        time.sleep(.01)
+        time.sleep(0.01)
         b12 = Book.objects.create(title="Pride and Prejudice", author="Jane Austen")
-        time.sleep(.01)
+        time.sleep(0.01)
         b13 = Book.objects.create(title="Lord of the Flies", author="William Golding")
-        time.sleep(.01)
+        time.sleep(0.01)
         b14 = Book.objects.create(title="Heart of Darkness", author="Joseph Conrad")
-        time.sleep(.01)
+        time.sleep(0.01)
         b15 = Book.objects.create(title="War and Peace", author="Leo Tolstoy")
 
         users = [

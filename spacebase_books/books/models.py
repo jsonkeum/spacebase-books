@@ -33,7 +33,10 @@ class BookUser(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.IntegerField(
-        validators=[MinValueValidator(constants.MIN_RATING), MaxValueValidator(constants.MAX_RATING)]
+        validators=[
+            MinValueValidator(constants.MIN_RATING),
+            MaxValueValidator(constants.MAX_RATING),
+        ]
     )
     external_id = models.CharField(max_length=200, default=None, blank=True, null=True)
 

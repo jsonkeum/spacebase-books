@@ -4,15 +4,57 @@
     justify-content: space-between;
 }
 
+.book-list__header .button {
+    margin-left: 8px;
+}
+
 .book-list__table {
     width: 100%;
 }
 
+.book-list__table a {
+    color: #192a42;
+}
+
+.book-list__table td, th {
+    padding: 8px;
+}
+
+.book-list__table th {
+    background-color: #192a42;
+    color: white;
+    font-weight: normal;
+}
+
+.book-list__table tr:nth-child(odd) {
+    background-color: #e4dec6;
+}
+
+.book-list__icons {
+    display: flex;
+    justify-content: space-around;
+}
+
 .book-add__rating {
     display: flex;
+    justify-content: space-between;
 }
 
 .book-add__rating-option > * {
     display: block;
     text-align: center;
+}
+
+.book-add__fields {
+    display: grid;
+    grid-template-columns: 120px auto;
+    grid-gap: 8px;
+}
+
+.book-add__fields > *:first-child {
+    min-width: 120px;
+}
+
+.book-add__fields input[type=text] {
+    height: fit-content;
 }

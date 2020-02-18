@@ -1,7 +1,7 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 
-from .forms import SignUpForm
+from ..forms import SignUpForm
 
 
 def register(request):
